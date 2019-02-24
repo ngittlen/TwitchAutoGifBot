@@ -1,0 +1,30 @@
+{
+  "name": "twitchautogif",
+  "version": "1.0.0",
+  "description": "A twitch chatbot for turning lines in chat into gifs on stream",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngittlen/TwitchAutoGifBot.git"
+  },
+  "keywords": [
+    "twitch",
+    "bot",
+    "chatbot",
+    "gif",
+    "giphy"
+  ],
+  "author": "Nate Gittlen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ngittlen/TwitchAutoGifBot/issues"
+  },
+  "homepage": "https://github.com/ngittlen/TwitchAutoGifBot#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "tmi.js": "^1.3.1"
+  }
+}
