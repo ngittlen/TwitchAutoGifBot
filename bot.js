@@ -82,12 +82,18 @@ function rollDice () {
 function findGif (command, target) {
     let giphyClient = GphApiClient(process.env.GIPHY_API_KEY);
     const numGifs = 25;
-    let gifNumber = randomNum(numGifs);
+    
     giphyClient.search('gifs', {"q": command, "limit": numGifs, "rating": 'pg-13'})
         .then((response) => {
-            if(gifNumber > response.data.length) {
-                gifNumber = response.data.length;
+            if(response.data === null || response.data.length < 1) {
+                twitchClient.say(target, `Cannot find gif for ${command}`);
+                console.log(`Cannot find gif for ${command}`);
+                return;
             }
+            if(numGifs > response.data.length) {
+                numGifs = response.data.length;
+            }
+            let gifNumber = randomNum(numGifs);
             // console.log("Used keywords " + command + " " + JSON.stringify(response.data, null, 4) + " number: " + gifNumber);
             // twitchClient.say(target, response.data[gifNumber].images.original.url);
             let width = parseInt(response.data[gifNumber].images.original.width);
