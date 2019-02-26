@@ -21,7 +21,9 @@ TWITCH_CHANNEL=<your twitch channel>
 GIPHY_API_KEY=<your giphy api key>
 ```
 
-and then run `npm install` and `node bot.js` and you should be going 
+and then run `npm install` and `node bot.js` and everything will start running
+
+Add a new Browser Source overlay on your stream and point it to http://localhost:3000 and the gifs will show up on stream
 
 ### Bot commands
 Commands are sent to the bot through twitch chat.
