@@ -1,5 +1,6 @@
 # TwitchAutoGifBot
 A twitch chatbot that automatically converts what people say in chat into gifs that appear in your stream using giphy
+![An example gif of a stream covered by cat photos](https://giant.gfycat.com/GiantCompassionateGalago.gif "Example")
 
 ### Dependencies
 node.js
