@@ -44,3 +44,5 @@ If !commandMode is active the bot will only read lines starting with !gif and us
 - Allow users to specify gif urls they want to appear (dangerous!)
 - Allow users to give coordinates of where they want gif to appear (dangerous?)
 - Start the bot in !commandMode
+- Eliminate refresh blink
+- Have it live update (unsure how besides maybe encoding all gifs into video stream or maybe canvas element, need to investigate)
