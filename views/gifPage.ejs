@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="5">
+    <title>Random Gif Display page</title>
+    <style>
+      body {
+          background-color:transparent;
+      }
+      #gifContainer {
+          width:1920;
+          height:1080;
+      }
+  </style>
+  </head>
+  <body>
+    <div id="gifContainer">
+      <% for(var gif in gifs){ %>
+        <img src= <%= gifs[gif].src %> style=" position:absolute; top: <%= gifs[gif].top %>px; left: <%= gifs[gif].left %>px">
+        <% } %>
+    </div>
+  </body>
+</html>
