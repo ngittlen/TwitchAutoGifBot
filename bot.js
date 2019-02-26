@@ -6,7 +6,11 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+// Todo:    Sub only mode?
+//          allow customization of number of gifs, gif rating, time they stay on screen, resolution of stream, etc.
+
 let gifs = [];
+let commandMode = false;
 
 setInterval(() => {
     if(gifs.length > 0){
@@ -19,7 +23,7 @@ app.get('/', function (req, res) {
 });
 
 app.listen(port, function() {
-    console.log('Example app listening on port ' + port);
+    console.log('Gif page displaying on port ' + port);
 });
 
 app.set('view engine', 'ejs');
@@ -57,10 +61,14 @@ function onMessageHandler (target, context, msg, self) {
         console.log(`* Executed ${command} command`);
     } else if (command.startsWith('!gif')) {
         findGif(command.substring(4).trim(), target);
-        
         console.log(`* Executed ${command} command`);
-    } else {
-        findGif(command.trim(), target);
+    } else if(command === ("!source")) {
+        twitchClient.say(target, `Source code for this bot can be found at https://github.com/ngittlen/TwitchAutoGifBot`);
+    } else if(command === "!commandMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
+        commandMode = !commandMode;
+        console.log(`* Switching commandMode to ${commandMode}`);
+    } else if(!commandMode) {
+        findGif(command, target);
         console.log(`* Finding gif with command ${command} target: ${target}`);
     }
 }
