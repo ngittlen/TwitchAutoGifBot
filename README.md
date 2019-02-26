@@ -37,6 +37,6 @@ If !commandMode is active the bot will only read lines starting with !gif and us
 ### Future plans:
 - Sub only mode?
 - Allow customization of number of gifs, gif rating, time they stay on screen, resolution of stream, etc.
-- Add options to specify the gif page's 
-- Allow users to specify gifs they want to appear
+- Add options to specify the gif page's port
+- Allow users to specify gif urls they want to appear (dangerous!)
 - Start the bot in !commandMode
