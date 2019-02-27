@@ -46,4 +46,4 @@ If !commandMode is active the bot will only read lines starting with !gif and us
 - Start the bot in !commandMode
 - Eliminate refresh blink
 - Have it live update (unsure how besides maybe encoding all gifs into video stream or maybe canvas element, need to investigate)
-- option to have gifs only display around edge of screen
+- reduce overlap of gifs by excluding occupied regions

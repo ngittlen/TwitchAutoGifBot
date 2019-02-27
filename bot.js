@@ -11,6 +11,9 @@ const port = 3000;
 
 let gifs = [];
 let commandMode = false;
+let edgeMode = false;
+let streamWidth = 1920;
+let streamHeight = 1080;
 
 setInterval(() => {
     if(gifs.length > 0){
@@ -63,6 +66,9 @@ function onMessageHandler (target, context, msg, self) {
     } else if(command === "!commandMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
         commandMode = !commandMode;
         console.log(`* Switching commandMode to ${commandMode}`);
+    } else if(command === "!edgeMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
+        edgeMode = !edgeMode;
+        console.log(`* Switching edgeMode to ${edgeMode}`);
     } else if(!commandMode && !command.startsWith("!")) {
         findGif(command, target, context["display-name"]);
         console.log(`* Finding gif with command ${command} target: ${target}`);
@@ -88,8 +94,32 @@ function findGif (command, target, username) {
             // twitchClient.say(target, response.data[gifNumber].images.original.url);
             let width = parseInt(response.data[gifNumber].images.original.width);
             let height = parseInt(response.data[gifNumber].images.original.height);
-            gifs.push({"src":response.data[gifNumber].images.original.url, "top": randomNum(1080 - height),
-             "left": randomNum(1920 - width),"width": width, "height": height, "prompt": command, "username": username});
+            let top, left;
+            if(edgeMode) {
+                let side = randomNum(4);
+                switch(side) {
+                    case 0:
+                        top = 0;
+                        left = randomNum(streamWidth - width);
+                        break;
+                    case 1: 
+                        top = randomNum(streamHeight - height);
+                        left = streamWidth - width;
+                        break;
+                    case 2:
+                        top = streamHeight - height;
+                        left = randomNum(streamWidth - width);
+                        break;
+                    case 3:
+                        top = randomNum(streamHeight - height);
+                        left = 0;
+                }
+            } else {
+                top = randomNum(streamHeight - height);
+                left = randomNum(streamWidth - width);
+            }
+            gifs.push({"src":response.data[gifNumber].images.original.url, "top": top,
+             "left": left,"width": width, "height": height, "prompt": command, "username": username});
                 console.log("user: " + username);
             if(gifs.length > 10) {
                 gifs.shift();
