@@ -6,20 +6,16 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-// Todo:    Sub only mode?
-//          allow customization of number of gifs, gif rating, time they stay on screen, resolution of stream, etc.
-
 let gifs = [];
 let commandMode = false;
 let edgeMode = false;
-let streamWidth = 1920;
-let streamHeight = 1080;
+let streamWidth = process.env.STREAM_WIDTH;
+let streamHeight = process.env.STREAM_HEIGHT;
+let gifRating = process.env.GIF_RATING; // options: "y", "g", "pg", "pg-13", "r", "unrated", "nsfw", ""
+let numGifsDisplayed = 10;
+let eraseDelaySecs = 30;
 
-setInterval(() => {
-    if(gifs.length > 0){
-        gifs.shift();
-    }
-}, 30000);
+let intervalId = setInterval(shiftGifs, eraseDelaySecs * 1000);
 
 app.get('/', function (req, res) {
     res.render('gifPage', {"gifs": gifs});
@@ -57,21 +53,34 @@ function onMessageHandler (target, context, msg, self) {
 
     // Remove whitespace from chat message
     const command = msg.trim();
+    const channelName = process.env.TWITCH_CHANNEL.toLocaleLowerCase();
     
-    if (command.startsWith('!gif')) {
+    // Commands: !gif <gifname>, !source, !edgeMode, !gifRating <rating>, !numGifs <gifs>, !gifTimeout <secs>,
+    if (command.startsWith('!gif ')) {
         findGif(command.substring(4).trim(), target, context["display-name"]);
-        console.log(`* Executed ${command} command`);
+        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username}`);
     } else if(command === ("!source")) {
         twitchClient.say(target, `Source code for this bot can be found at https://github.com/ngittlen/TwitchAutoGifBot`);
-    } else if(command === "!commandMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
+    } else if(command === "!commandMode" && context.username === channelName) {
         commandMode = !commandMode;
         console.log(`* Switching commandMode to ${commandMode}`);
-    } else if(command === "!edgeMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
+    } else if(command === "!edgeMode" && context.username === channelName) {
         edgeMode = !edgeMode;
         console.log(`* Switching edgeMode to ${edgeMode}`);
+    } else if(command.startsWith("!gifRating ") && context.username === channelName) {
+        gifRating = command.substring(10).trim();
+        console.log(`* Switching gifRating to ${gifRating}`);
+    } else if(command.startsWith("!numGifs ") && context.username === channelName) {
+        numGifsDisplayed = command.substring(8).trim();
+        console.log(`* Setting numGifsDisplayed to ${numGifsDisplayed}`);
+    } else if(command.startsWith("!gifTimeout ") && context.username === channelName) {
+        eraseDelaySecs = command.substring(11).trim();
+        clearInterval(intervalId);
+        intervalId = setInterval(shiftGifs, eraseDelaySecs * 1000);
+        console.log(`* Setting eraseDelaySecs to ${eraseDelaySecs}`);
     } else if(!commandMode && !command.startsWith("!")) {
         findGif(command, target, context["display-name"]);
-        console.log(`* Finding gif with command ${command} target: ${target}`);
+        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} rating: ${gifRating}`);
     }
 }
 
@@ -79,7 +88,7 @@ function findGif (command, target, username) {
     let giphyClient = GphApiClient(process.env.GIPHY_API_KEY);
     const numGifs = 30;
     
-    giphyClient.search('gifs', {"q": command, "limit": numGifs, "rating": 'pg-13'})
+    giphyClient.search('gifs', {"q": command, "limit": numGifs, "rating": gifRating})
         .then((response) => {
             if(response.data === null || response.data.length < 1) {
                 twitchClient.say(target, `Cannot find gif for ${command}`);
@@ -120,8 +129,7 @@ function findGif (command, target, username) {
             }
             gifs.push({"src":response.data[gifNumber].images.original.url, "top": top,
              "left": left,"width": width, "height": height, "prompt": command, "username": username});
-                console.log("user: " + username);
-            if(gifs.length > 10) {
+            if(gifs.length > numGifsDisplayed) {
                 gifs.shift();
             }
         })
@@ -137,4 +145,10 @@ function onConnectedHandler (addr, port) {
 
 function randomNum(maxNum) {
     return Math.floor(Math.random() * maxNum);
+}
+
+function shiftGifs() {
+    if(gifs.length > 0){
+        gifs.shift();
+    }
 }
