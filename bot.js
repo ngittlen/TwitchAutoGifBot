@@ -69,15 +69,9 @@ function onMessageHandler (target, context, msg, self) {
     }
 }
 
-// Function called when the "dice" command is issued
-function rollDice () {
-    const sides = 6;
-    return Math.ceil(Math.random() * sides);
-}
-
 function findGif (command, target, username) {
     let giphyClient = GphApiClient(process.env.GIPHY_API_KEY);
-    const numGifs = 25;
+    const numGifs = 30;
     
     giphyClient.search('gifs', {"q": command, "limit": numGifs, "rating": 'pg-13'})
         .then((response) => {
@@ -97,7 +91,7 @@ function findGif (command, target, username) {
             gifs.push({"src":response.data[gifNumber].images.original.url, "top": randomNum(1080 - height),
              "left": randomNum(1920 - width),"width": width, "height": height, "prompt": command, "username": username});
                 console.log("user: " + username);
-            if(gifs.length > 6) {
+            if(gifs.length > 10) {
                 gifs.shift();
             }
         })
