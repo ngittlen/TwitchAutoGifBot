@@ -33,7 +33,7 @@ Add a new Browser Source overlay on your stream and point it to http://localhost
 ### Bot commands
 Commands are sent to the bot through twitch chat.
 
-The bot turns any line of text in chat into a giphy by passing the line as a search to giphy and grabbing a random result
+The bot turns any line of text in chat into a gif by passing the line as a search to giphy and grabbing a random result
 
 Commands (only useable by channel owner):
 - ```!commandMode```: when active the bot will only read lines starting with !gif and use the text following that to search
