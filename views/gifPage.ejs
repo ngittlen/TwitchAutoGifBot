@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="refresh" content="5">
     <title>Random Gif Display page</title>
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <style>
       body {
           background-color:transparent;
@@ -12,12 +13,39 @@
           width:1920;
           height:1080;
       }
+      .attrGif {
+        color: #000;
+        font-size:16pt;
+        font-family: 'Oswald', Arial, Helvetica, sans-serif;
+        text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+      }
+      .username {
+        padding-left: 0.25em;
+        font-size: 14pt;
+        position: absolute;
+        bottom:0;
+        right:5px;
+      }
+      .prompt {
+        padding-left: 0.25em;
+        position: absolute;
+        bottom:0;
+        left:0;
+        font-size:8pt;
+      }
+
   </style>
   </head>
   <body>
     <div id="gifContainer">
       <% for(var gif in gifs){ %>
-        <img src= <%= gifs[gif].src %> style=" position:absolute; top: <%= gifs[gif].top %>px; left: <%= gifs[gif].left %>px">
+        <div style=" position:absolute; top: <%= gifs[gif].top %>px; left: <%= gifs[gif].left %>px; 
+        width: <%= gifs[gif].width %>px; height: <%= gifs[gif].height %>px" class="attrGif">
+          
+          <img  src= <%= gifs[gif].src %>>
+          <div class="prompt"><%= gifs[gif].prompt %></div>
+          <div class="username"><%= gifs[gif].username %></div>
+        </div>
         <% } %>
     </div>
   </body>

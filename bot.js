@@ -54,21 +54,17 @@ function onMessageHandler (target, context, msg, self) {
 
     // Remove whitespace from chat message
     const command = msg.trim();
-
-    if(command === '!dice') {
-        const num = rollDice();
-        twitchClient.say(target, `You rolled a ${num}`);
-        console.log(`* Executed ${command} command`);
-    } else if (command.startsWith('!gif')) {
-        findGif(command.substring(4).trim(), target);
+    
+    if (command.startsWith('!gif')) {
+        findGif(command.substring(4).trim(), target, context["display-name"]);
         console.log(`* Executed ${command} command`);
     } else if(command === ("!source")) {
         twitchClient.say(target, `Source code for this bot can be found at https://github.com/ngittlen/TwitchAutoGifBot`);
     } else if(command === "!commandMode" && context.username === process.env.TWITCH_CHANNEL.toLocaleLowerCase()) {
         commandMode = !commandMode;
         console.log(`* Switching commandMode to ${commandMode}`);
-    } else if(!commandMode) {
-        findGif(command, target);
+    } else if(!commandMode && !command.startsWith("!")) {
+        findGif(command, target, context["display-name"]);
         console.log(`* Finding gif with command ${command} target: ${target}`);
     }
 }
@@ -79,7 +75,7 @@ function rollDice () {
     return Math.ceil(Math.random() * sides);
 }
 
-function findGif (command, target) {
+function findGif (command, target, username) {
     let giphyClient = GphApiClient(process.env.GIPHY_API_KEY);
     const numGifs = 25;
     
@@ -98,7 +94,9 @@ function findGif (command, target) {
             // twitchClient.say(target, response.data[gifNumber].images.original.url);
             let width = parseInt(response.data[gifNumber].images.original.width);
             let height = parseInt(response.data[gifNumber].images.original.height);
-            gifs.push({"src":response.data[gifNumber].images.original.url, "top": randomNum(1080 - height), "left": randomNum(1920 - width)});
+            gifs.push({"src":response.data[gifNumber].images.original.url, "top": randomNum(1080 - height),
+             "left": randomNum(1920 - width),"width": width, "height": height, "prompt": command, "username": username});
+                console.log("user: " + username);
             if(gifs.length > 6) {
                 gifs.shift();
             }
