@@ -55,3 +55,4 @@ Command (useable by anyone):
 - Have it live update (unsure how besides maybe encoding all gifs into video stream or maybe canvas element, need to investigate)
 - reduce overlap of gifs by excluding occupied regions
 - give channel owner ability to remove gif
+- ban people from using bot
