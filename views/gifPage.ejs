@@ -27,11 +27,11 @@
         right:5px;
       }
       .prompt {
-        padding-left: 0.25em;
+        padding-left: 0.33em;
         position: absolute;
         bottom:0;
         left:0;
-        font-size:8pt;
+        font-size:12pt;
       }
 
   </style>
@@ -45,6 +45,8 @@
           <img  src= <%= gifs[gif].src %>>
           <div class="prompt"><%= gifs[gif].prompt %></div>
           <div class="username"><%= gifs[gif].username %></div>
+          <img  src="Poweredby_100px-White_VertLogo.png" 
+          width="101px" height="36px" title="Powerd By Giphy" alt="Powerd By Giphy" style="margin-top: -8px" />
         </div>
         <% } %>
     </div>
