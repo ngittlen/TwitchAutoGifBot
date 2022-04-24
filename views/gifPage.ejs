@@ -10,8 +10,10 @@
           background-color:transparent;
       }
       #gifContainer {
-          width:1920;
-          height:1080;
+          width:1490;
+          height:900; /*
+          width: 75vw;
+          height: 75vh; */
       }
       .attrGif {
         color: #000;
@@ -40,7 +42,10 @@
     <div id="gifContainer">
       <% for(var gif in gifs){ %>
         <div style=" position:absolute; top: <%= gifs[gif].top %>px; left: <%= gifs[gif].left %>px; 
-        width: <%= gifs[gif].width %>px; height: <%= gifs[gif].height %>px" class="attrGif">
+         width: <%= gifs[gif].width %><%= gifs[gif].unit %>;
+         height: <%= gifs[gif].height %><%= gifs[gif].unit %>
+         <%= gifs[gif].fullMode %>"
+          class="attrGif">
           
           <img  src= <%= gifs[gif].src %>>
           <div class="prompt"><%= gifs[gif].prompt %></div>
