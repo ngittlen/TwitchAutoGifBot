@@ -17,13 +17,15 @@ Create a .env file with the following variables in this directory:
 
 ```
 # .env
-TWITCH_USERNAME=<your bot's username>
+TWITCH_USERNAME=<your bot's username. ex. jedi_bot>
 TWITCH_OAUTH=oauth:<your bot's oauth key>
-TWITCH_CHANNEL=<your twitch channel>
-STREAM_WIDTH=<width in pixels>
-STREAM_HEIGHT=<height in pixels>
+TWITCH_CHANNEL=<your twitch channel. ex. jedi_megaman>
+STREAM_WIDTH=<width in pixels. ex. 1280>
+STREAM_HEIGHT=<height in pixels. ex. 720>
 GIPHY_API_KEY=<your giphy api key>
 GIF_RATING=<a giphy rating setting> #options: "y", "g", "pg", "pg-13", "r", "unrated", "nsfw", ""
+DEFAULT_NUM_GIFS=<number of gifs to show allow on screen at once. ex. 10>
+DEFAULT_GIF_DISPLAY_TIME=<number of seconds to show a gif for. ex. 10>
 ```
 
 and then run `npm install` and `node bot.js` and everything will start running
@@ -41,6 +43,9 @@ Commands (only useable by channel owner):
 - ```!gifRating <rating>```: sets the rating for gifs
 - ```!numGifs <number>```: sets the number of gifs that can be displayed at once before old ones are removed
 - ```!gifTimeout <number>```: sets the time in seconds it takes to remove old gifs -- note that due to the 5 second refresh delay this won't be perfect
+- ```!noOverlapMode```: prevent preceeding gifs from overlapping (currently only works with 2 gifs at a time.)
+- ```!oneAtATimeMode```: only show 1 gif on screen at a time, with additional gifs awaiting their turn in a queue.
+- ```!fullscreenMode```: fill the entire gif container with the gif image.
 
 Command (useable by anyone):
 - ```!source```: puts a link to the source code in chat

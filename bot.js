@@ -14,6 +14,7 @@ let edgeMode = false;
 let noOverlapMode = true;
 let oneAtATimeMode = false;
 let fullscreenMode = false;
+let offlineDebugMode = false;
 
 let streamWidth = process.env.STREAM_WIDTH;
 let streamHeight = process.env.STREAM_HEIGHT-36; //-36 to account for size of Giphy png.
@@ -28,7 +29,7 @@ let prevSpawnPoints ={ x:0, y:0};
 let intervalId = setInterval(shiftGifs, eraseDelaySecs * 1000);
 
 app.get('/', function (req, res) {
-    res.render('gifPage', {"gifs": gifs});
+    res.render('gifPage', {"gifs": gifs, "offlineDebugMode": offlineDebugMode});
 });
 
 app.listen(port, function() {
@@ -63,7 +64,8 @@ twitchClient.connect();
 function onMessageHandler (target, context, msg, self) {
     if(self 
         || context.username === "profsolgy"
-        || context.username === "streamelements") {return;} // Ignore messages from the bots (add your own here)
+        || context.username === "streamelements"
+        || context.username === "Nightbot") {return;} // Ignore messages from the bots (add your own here)
 
     // Remove whitespace from chat message
     const command = msg.trim();
@@ -72,26 +74,31 @@ function onMessageHandler (target, context, msg, self) {
     let isMod = context.mod;
     let isHost = context.username === channelName ? true : false;
     let isApprovedUser = (isMod || isHost);
+    let reply = "";
     
     // Commands: !gif <gifname>, !source, !edgeMode, !gifRating <rating>, !numGifs <gifs>, !gifTimeout <secs>,
     if (command.toLocaleLowerCase().startsWith('!gif ')) {
         findGif(command.substring(4).trim(), target, context["display-name"]);
-        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} `);
+        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} * `);
     } else if (command.toLocaleLowerCase().startsWith('!g ')) {
         findGif(command.substring(2).trim(), target, context["display-name"]);
-        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} `);
+        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} * `);
     } else if(command === ("!source").toLocaleLowerCase()) {
-        twitchClient.say(target, `Source code for this bot can be found at https://github.com/ngittlen/TwitchAutoGifBot:`);
+        twitchClient.say(target, `Source code for this bot can be found at https://github.com/JediMegaman/TwitchAutoGifBot * `);
     } else if(command.toLocaleLowerCase() === "!commandmode" && isApprovedUser) {
         commandMode = !commandMode;
-        console.log(`* Switching commandMode to ${commandMode} `);
+        reply = `* Switching commandMode to ${commandMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase() === "!edgemode" && isApprovedUser) {  //display mode switch
         edgeMode = !edgeMode;
         noOverlapMode = !edgeMode;
         fullscreenMode = false;
         oneAtATimeMode = false;
 
-        console.log(`* Switching edgeMode to ${edgeMode} `);
+        reply = `* Switching edgeMode to ${edgeMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase() === "!nooverlapmode" && isApprovedUser) {  //display mode switch
         noOverlapMode = !noOverlapMode;
         //if noOverlapMode was just turned off, random mode is on by default now.
@@ -99,23 +106,31 @@ function onMessageHandler (target, context, msg, self) {
         fullscreenMode = false;
         edgeMode = false;
 
-        console.log(`* Switching noOverlapMode to ${noOverlapMode} `);
+        reply = `* Switching noOverlapMode to ${noOverlapMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase().startsWith("!gifrating ") && isApprovedUser) {
         gifRating = command.substring(10).trim();
-        console.log(`* Switching gifRating to ${gifRating} `);
+        reply = `* Switching gifRating to ${gifRating} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase().startsWith("!numgifs ") && isApprovedUser) {
         numGifsDisplayed = command.substring(8).trim();
-        console.log(`* Setting numGifsDisplayed to ${numGifsDisplayed} `);
+        reply = `* Setting numGifsDisplayed to ${numGifsDisplayed} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase().startsWith("!giftimeout ") && isApprovedUser) {
         eraseDelaySecs = command.substring(11).trim();
         clearInterval(intervalId);
         intervalId = setInterval(shiftGifs, eraseDelaySecs * 1000);
 
-        console.log(`* Setting eraseDelaySecs to ${eraseDelaySecs}`);
+        reply = `* Setting eraseDelaySecs to ${eraseDelaySecs} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(!commandMode && !command.startsWith("!")) {       //when CommandMode is off, turn all non command messages (normal chat) into gif search commands.
         findGif(command, target, context["display-name"]);
 
-        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} rating: ${gifRating}`);
+        console.log(`* Finding gif with command ${command} target: ${target} user: ${context.username} rating: ${gifRating} * `);
     } else if(command.toLocaleLowerCase().startsWith("!clear") && isApprovedUser) {
         clearGifs();
 
@@ -136,14 +151,23 @@ function onMessageHandler (target, context, msg, self) {
         } else {
             numGifsDisplayed = process.env.DEFAULT_NUM_GIFS;
         }
-        console.log(`* Switching OneAtATimeMode to ${oneAtATimeMode} `);
+        reply = `* Switching OneAtATimeMode to ${oneAtATimeMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     } else if(command.toLocaleLowerCase() === "!fullscreenmode" && isApprovedUser) {  //display mode switch
         fullscreenMode = !fullscreenMode;
         oneAtATimeMode = false;
         noOverlapMode = false;
         edgeMode = false;
 
-        console.log(`* Switching fullscreenMode to ${fullscreenMode} `);
+        reply = `* Switching fullscreenMode to ${fullscreenMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
+    } else if(command.toLocaleLowerCase().startsWith("!debug") && isApprovedUser) {
+        offlineDebugMode = !offlineDebugMode;
+        reply = `* Setting Debug Mode to ${offlineDebugMode} * `;
+        console.log(reply);
+        twitchClient.say(target, "Bot: " + reply);
     }
 }
 
@@ -162,17 +186,17 @@ function findGif (command, target, username) {
                 numGifs = response.data.length;
             }
             let gifNumber = randomNum(numGifs);
-            // console.log("Used keywords " + command + " " + JSON.stringify(response.data, null, 4) + " number: " + gifNumber);
+            //console.log("Used keywords " + command + " " + JSON.stringify(response.data, null, 4) + " number: " + gifNumber);
             // twitchClient.say(target, response.data[gifNumber].images.original.url);
             let width = parseInt(response.data[gifNumber].images.original.width);
             let height = parseInt(response.data[gifNumber].images.original.height);
             let unit = "px";
-            let fullMode = "";
+            let fullMode = ";";
             let top, left;
             if(noOverlapMode) {
                 spawnPoints = getOpenRandomSpawnPoint(streamWidth - width, streamHeight - height, width, height);
-                top = spawnPoints.x;
-                left = spawnPoints.y;
+                left = spawnPoints.x;
+                top = spawnPoints.y;
             } else if(edgeMode) {
                 let side = randomNum(4);
                 switch(side) {
@@ -208,8 +232,8 @@ function findGif (command, target, username) {
             }
 
             //save new imgSpawnPoints and sizes
-            prevSpawnPoints.x = top;
-            prevSpawnPoints.y = left;
+            prevSpawnPoints.x = left;
+            prevSpawnPoints.y = top;
             prevGifWidth = width;
             prevGifHeight = height;
 

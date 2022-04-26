@@ -10,10 +10,13 @@
           background-color:transparent;
       }
       #gifContainer {
-          width:1490;
-          height:900; /*
+          width:1280px;
+          height:720px; /*
           width: 75vw;
           height: 75vh; */
+          <% if(offlineDebugMode == true){ %>
+            border: black solid medium;
+          <% } %>
       }
       .attrGif {
         color: #000;
@@ -38,7 +41,7 @@
 
   </style>
   </head>
-  <body>
+  <body <% if(offlineDebugMode == true){ %> style="border: red solid thin;"<% } %> >
     <div id="gifContainer">
       <% for(var gif in gifs){ %>
         <div style=" position:absolute; top: <%= gifs[gif].top %>px; left: <%= gifs[gif].left %>px; 
